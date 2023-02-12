@@ -53,10 +53,13 @@ namespace ConcurrentCollections1
 
         private static void Update2(ConcurrentDictionary<string, int> robots)
         {
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} Start");
+
             var foundCount = SearchForGems();
             var currentCount = robots["robot3"];
             var b = robots.TryUpdate("robot3", foundCount + currentCount, currentCount);
-            Console.WriteLine($"update success: {b}");
+
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} update success: {b}");
         }
 
         private static void Update1(ConcurrentDictionary<string, int> robots)
