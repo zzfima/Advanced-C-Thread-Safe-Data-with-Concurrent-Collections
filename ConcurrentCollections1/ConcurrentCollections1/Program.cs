@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ConcurrentCollections1
 {
@@ -40,15 +41,48 @@ namespace ConcurrentCollections1
 
             PrintAllRobots(robots);
 
-            var t1 = Task.Run(() => Update3(robots));
-            var t2 = Task.Run(() => Update3(robots));
-            var t3 = Task.Run(() => Update3(robots));
+            var t1 = Task.Run(() => Update4(robots));
+            var t2 = Task.Run(() => Update4(robots));
+            var t3 = Task.Run(() => Update4(robots));
 
             Task.WaitAll(t1, t2, t3);
 
             PrintAllRobots(robots);
 
             Console.ReadLine();
+        }
+
+        private static void Update4(ConcurrentDictionary<string, int> robots)
+        {
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} Start");
+
+            var foundCount = SearchForGems();
+
+            //can be done by using next code. but code is not thread safe
+            /*
+            if (robots.ContainsKey("robot3"))
+            {
+                var currentCount = robots["robot3"];
+                robots["robot3"] = foundCount + currentCount;
+            }
+            else
+            {
+                robots["robot3"] = foundCount;
+            }
+            */
+
+            var r = robots.AddOrUpdate(
+                key: "robot3",
+                addValueFactory: (s) =>
+                {
+                    return foundCount;
+                },
+                updateValueFactory: (s, i) =>
+                {
+                    return foundCount + robots["robot3"];
+                });
+
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} AddOrUpdate result: {r}");
         }
 
         private static void Update3(ConcurrentDictionary<string, int> robots)
