@@ -8,7 +8,7 @@ namespace ConcurrentCollections1
         {
             try
             {
-                Demo();
+                DemoUpdateData();
             }
             catch (Exception ex)
             {
@@ -18,7 +18,34 @@ namespace ConcurrentCollections1
             }
         }
 
-        private static void Demo()
+        private static void DemoUpdateData()
+        {
+            var robots = new ConcurrentDictionary<string, int>();
+
+            robots.TryAdd(key: "robot1", value: 10);
+            robots.TryAdd(key: "robot2", value: 20);
+            robots.TryAdd(key: "robot3", value: 30);
+            robots.TryAdd(key: "robot4", value: 40);
+
+            if (robots.TryAdd(key: "robot4", value: 44))
+            {
+                Console.WriteLine("robot4 added to dictionary");
+            }
+            else
+            {
+                Console.WriteLine("robot4 not added to dictionary");
+            }
+
+            Console.WriteLine($"team count: {robots.Count}");
+            foreach (var robot in robots)
+            {
+                Console.WriteLine(robot.ToString());
+            }
+
+            Console.ReadLine();
+        }
+
+        private static void Demo1()
         {
             // dictionary operations
             // Add, Remove, Update, Count
