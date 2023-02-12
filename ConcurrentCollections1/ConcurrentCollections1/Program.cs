@@ -45,7 +45,10 @@ namespace ConcurrentCollections1
             {
                 try
                 {
-                    dictionary.ToList();
+                    //Exception!
+                    //Why? dictionary.ToList is an extentjion method, which has not thread safe mechanizm
+                    //dictionary.ToList();
+                    dictionary.ToArray();
                 }
                 catch (Exception)
                 {
