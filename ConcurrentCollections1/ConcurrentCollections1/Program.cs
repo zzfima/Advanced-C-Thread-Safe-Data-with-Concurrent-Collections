@@ -11,13 +11,46 @@ namespace ConcurrentCollections1
         {
             try
             {
-                DemoUpdateData();
+                DemoException();
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Exception:{ex.Message}");
                 Console.ResetColor();
+            }
+        }
+
+        private static void DemoException()
+        {
+            var dictionary = new ConcurrentDictionary<int, int>();
+            Task.Run(() =>
+            {
+                var random = new Random();
+                while (true)
+                {
+                    var value = random.Next(10000);
+                    try
+                    {
+                        dictionary[value] = value;
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            });
+
+            while (true)
+            {
+                try
+                {
+                    dictionary.ToList();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 
