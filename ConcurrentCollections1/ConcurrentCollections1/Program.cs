@@ -4,6 +4,8 @@ namespace ConcurrentCollections1
 {
     internal class Program
     {
+        private static readonly object _lock = new object();
+
         private static void Main(string[] args)
         {
             try
@@ -36,14 +38,48 @@ namespace ConcurrentCollections1
                 Console.WriteLine("robot4 not added to dictionary");
             }
 
-            Console.WriteLine($"team count: {robots.Count}");
+            PrintAllRobots(robots);
+
+            var t1 = Task.Run(() => Update2(robots));
+            var t2 = Task.Run(() => Update2(robots));
+            var t3 = Task.Run(() => Update2(robots));
+
+            Task.WaitAll(t1, t2, t3);
+
+            PrintAllRobots(robots);
+
+            Console.ReadLine();
+        }
+
+        private static void Update2(ConcurrentDictionary<string, int> robots)
+        {
+            var foundCount = SearchForGems();
+            var currentCount = robots["robot3"];
+            var b = robots.TryUpdate("robot3", foundCount + currentCount, currentCount);
+            Console.WriteLine($"update success: {b}");
+        }
+
+        private static void Update1(ConcurrentDictionary<string, int> robots)
+        {
+            lock (_lock)
+            {
+                var foundCount = SearchForGems();
+                var currentCount = robots["robot3"];
+                robots["robot3"] = foundCount + currentCount;
+            }
+        }
+
+        private static void PrintAllRobots(ConcurrentDictionary<string, int> robots)
+        {
+            Console.WriteLine("print all robots starts");
             foreach (var robot in robots)
             {
                 Console.WriteLine(robot.ToString());
             }
-
-            Console.ReadLine();
+            Console.WriteLine();
         }
+
+        private static int SearchForGems() => 3;
 
         private static void Demo1()
         {
