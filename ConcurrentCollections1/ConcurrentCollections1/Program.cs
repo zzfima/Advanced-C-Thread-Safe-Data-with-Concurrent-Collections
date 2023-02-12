@@ -79,7 +79,8 @@ namespace ConcurrentCollections1
                 },
                 updateValueFactory: (s, i) =>
                 {
-                    return foundCount + robots["robot3"];
+                    lock (_lock)
+                        return foundCount + robots["robot3"];
                 });
 
             Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} AddOrUpdate result: {r}");
