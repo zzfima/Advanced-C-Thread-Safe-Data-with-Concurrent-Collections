@@ -40,15 +40,30 @@ namespace ConcurrentCollections1
 
             PrintAllRobots(robots);
 
-            var t1 = Task.Run(() => Update2(robots));
-            var t2 = Task.Run(() => Update2(robots));
-            var t3 = Task.Run(() => Update2(robots));
+            var t1 = Task.Run(() => Update3(robots));
+            var t2 = Task.Run(() => Update3(robots));
+            var t3 = Task.Run(() => Update3(robots));
 
             Task.WaitAll(t1, t2, t3);
 
             PrintAllRobots(robots);
 
             Console.ReadLine();
+        }
+
+        private static void Update3(ConcurrentDictionary<string, int> robots)
+        {
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} Start");
+
+            var foundCount = SearchForGems();
+            var currentCount = robots["robot3"];
+            while (!robots.TryUpdate("robot3", foundCount + currentCount, currentCount))
+            {
+                currentCount = robots["robot3"];
+                Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} retry");
+            }
+
+            Console.WriteLine($"thread {Thread.CurrentThread.ManagedThreadId} update success");
         }
 
         private static void Update2(ConcurrentDictionary<string, int> robots)
