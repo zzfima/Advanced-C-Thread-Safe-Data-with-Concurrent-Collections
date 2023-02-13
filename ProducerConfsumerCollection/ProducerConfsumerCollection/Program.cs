@@ -35,7 +35,6 @@ namespace ProducerConfsumerCollection
             Task.Run(TryTake);
             Task.Run(Add);
             Task.Run(Add);
-            Task.Run(Add);
         }
 
         private void Add()
