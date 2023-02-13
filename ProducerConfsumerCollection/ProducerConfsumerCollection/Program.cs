@@ -51,7 +51,7 @@ namespace ProducerConfsumerCollection
             {
                 var b = _stack.TryPop(out int res);
                 Console.WriteLine($"Success: {b}, res: {res}");
-                Thread.Sleep(500);
+                Thread.Sleep(10);
             }
         }
     }
