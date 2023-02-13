@@ -14,7 +14,7 @@ namespace ProducerConfsumerCollection
 
         static void Main(string[] args)
         {
-            StackConsumerProducer consumerProducer = new StackConsumerProducer();
+            BagConsumerProducer consumerProducer = new BagConsumerProducer();
             consumerProducer.Start();
 
             Console.ReadLine();
@@ -34,6 +34,8 @@ namespace ProducerConfsumerCollection
         {
             Task.Run(TryTake);
             Task.Run(Add);
+            Task.Run(Add);
+            Task.Run(Add);
         }
 
         private void Add()
@@ -41,8 +43,10 @@ namespace ProducerConfsumerCollection
             Random random = new Random();
             while (true)
             {
-                _bag.Add(DateTime.Now.Second);
-                Thread.Sleep(random.Next(100, 3000));
+                var v = DateTime.Now.Millisecond;
+                _bag.Add(v);
+                Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} insert value {v}");
+                Thread.Sleep(random.Next(500, 3000));
             }
         }
 
@@ -51,8 +55,8 @@ namespace ProducerConfsumerCollection
             while (true)
             {
                 var b = _bag.TryTake(out int res);
-                Console.WriteLine($"Success: {b}, res: {res}");
-                Thread.Sleep(10);
+                Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId} take success: {b}, res: {res}");
+                Thread.Sleep(1000);
             }
         }
     }
